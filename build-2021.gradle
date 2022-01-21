@@ -1,0 +1,64 @@
+/*
+A modernized version of a Gradle build file using the Gradle Job DSL support
+plugin. It aims to use Jenkins version >=2.289.3 in order to support
+constraints of plugin releases like `postbuildscript:3.1.0-348.vaf5cd5c632ce`.
+
+Synopsis:
+
+    ./gradlew --build-file=build-2021.gradle clean jobDslTest --info
+*/
+
+plugins {
+    id 'com.aoe.jenkins-job-dsl' version '2.9.0'
+}
+
+repositories {
+    maven {
+          url "https://repo.jenkins-ci.org/public"
+    }
+}
+
+apply plugin: 'groovy'
+
+
+// Define Jenkins version by choosing a release from https://get.jenkins.io/war-stable/.
+ext {
+
+    // Defined by upstream plugin `com.aoe.jenkins-job-dsl`.
+    //jenkinsVersion = '2.121'      // 2020-03-06
+
+    // Last known good version.
+    //jenkinsVersion = '2.263.4'    // 2021-02-10
+
+    // Jenkins 2.277.1 has replaced its outdated fork of the XStream XML serialization
+    // library with a recent release of the official XStream library.
+    // https://www.jenkins.io/doc/upgrade-guide/2.277/#xstream-update-jep-228
+    jenkinsVersion = '2.277.1'      // 2021-03-10
+
+    // Needed by `postbuildscript:3.1.0-348.vaf5cd5c632ce`.
+    //jenkinsVersion = '2.289.3'    // 2021-07-28
+
+    // Further goals: The two most recent LTS releases.
+    //jenkinsVersion = '2.303.3'    // 2021-11-04
+    //jenkinsVersion = '2.319.2'    // 2022-01-12
+}
+
+// Helper to override Jenkins version.
+// `com.aoe.jenkins-job-dsl` pins Jenkins to version 2.121. This overrides it.
+// https://github.com/AOEpeople/gradle-jenkins-job-dsl-plugin/issues/16#issuecomment-619289458
+configurations.all {
+  resolutionStrategy.dependencySubstitution {
+    substitute module("org.jenkins-ci.main:jenkins-war:2.121") because "Version we use" with module("org.jenkins-ci.main:jenkins-war:$jenkinsVersion")
+    substitute module("org.jenkins-ci.main:jenkins-war:$jenkinsVersion")
+  }
+}
+
+jobDsl {
+    sourceDir 'jobs'
+    version = '1.78.3'
+    addRepositories = false
+}
+
+dependencies {
+    implementation('javax.xml.bind:jaxb-api:2.3.0')
+}

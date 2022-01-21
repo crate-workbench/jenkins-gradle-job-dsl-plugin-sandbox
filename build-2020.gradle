@@ -1,0 +1,31 @@
+/*
+An initial version of a Gradle build file using the Gradle Job DSL support
+plugin. It will use Jenkins version 2.121 defined upstream within the plugin
+and works without further ado.
+
+Synopsis:
+
+    ./gradlew --build-file=build-2020.gradle clean jobDslTest --info
+*/
+
+plugins {
+    id 'com.aoe.jenkins-job-dsl' version '2.8.0'
+}
+
+repositories {
+    maven {
+          url "https://repo.jenkins-ci.org/public"
+    }
+}
+
+apply plugin: 'groovy'
+
+jobDsl {
+    sourceDir 'jobs'
+    version = '1.76'
+    addRepositories = false
+}
+
+dependencies {
+    implementation('javax.xml.bind:jaxb-api:2.3.0')
+}
