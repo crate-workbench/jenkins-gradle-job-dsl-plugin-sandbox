@@ -4,11 +4,11 @@ A sandbox repository to investigate using more recent versions of Jenkins
 together with the [Gradle Job DSL support plugin].
 
 
-# Versions used
+# Software versions
 
-Java: 1.8.0 and 11.0.2
-Gradle: 4.9, 6.3 and 6.9
-Jenkins: 2.121 (upstream), 2.263.4 (works), 2.277.1 (fails)
+- Java: 1.8.0 and 11.0.2
+- Gradle: 4.9, 6.3 and 6.9
+- Jenkins: 2.121 (upstream), 2.263.4 (works), 2.277.1 (fails)
 
 
 # Background
